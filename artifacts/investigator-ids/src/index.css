@@ -1,0 +1,723 @@
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=VT323&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-border: hsl(var(--card-border));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover-border: hsl(var(--popover-border));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-border: var(--primary-border);
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary-border: var(--secondary-border);
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-muted-border: var(--muted-border);
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent-border: var(--accent-border);
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive-border: var(--destructive-border);
+
+  --font-sans: var(--app-font-sans);
+  --font-serif: var(--app-font-serif);
+  --font-mono: var(--app-font-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root, .dark {
+  --button-outline: rgba(255,255,255, .10);
+  --badge-outline: rgba(255,255,255, .05);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,255,255, .04);
+  --elevate-2: rgba(255,255,255, .09);
+
+  /* Dark Horror / Analog Horror Theme */
+  --background: 0 0% 4%; /* #0a0a0a */
+  --foreground: 60 14% 89%; /* #e8e8e0 */
+  --border: 0 100% 27%; /* #8b0000 */
+  --card: 0 0% 7%; /* #111111 */
+  --card-foreground: 60 14% 89%;
+  --card-border: 0 100% 27%;
+  
+  --sidebar: 0 0% 7%;
+  --sidebar-foreground: 60 14% 89%;
+  --sidebar-border: 0 100% 27%;
+  --sidebar-primary: 0 100% 27%;
+  --sidebar-primary-foreground: 60 14% 89%;
+  --sidebar-accent: 0 0% 12%;
+  --sidebar-accent-foreground: 60 14% 89%;
+  --sidebar-ring: 0 100% 27%;
+
+  --popover: 0 0% 7%;
+  --popover-foreground: 60 14% 89%;
+  --popover-border: 0 100% 27%;
+
+  --primary: 0 100% 27%; /* #8b0000 */
+  --primary-foreground: 60 14% 89%;
+  
+  --secondary: 0 0% 12%;
+  --secondary-foreground: 60 14% 89%;
+  
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 60%;
+  
+  --accent: 0 100% 15%;
+  --accent-foreground: 60 14% 89%;
+  
+  --destructive: 0 100% 50%;
+  --destructive-foreground: 60 14% 89%;
+  
+  --input: 0 100% 27%;
+  --ring: 0 100% 27%;
+  
+  --chart-1: 0 100% 27%;
+  --chart-2: 0 0% 50%;
+  --chart-3: 0 0% 30%;
+  --chart-4: 0 0% 10%;
+  --chart-5: 0 100% 15%;
+
+  --app-font-sans: 'VT323', monospace;
+  --app-font-serif: 'Special Elite', cursive;
+  --app-font-mono: 'VT323', monospace;
+  
+  --radius: 0rem; /* Sharp edges for horror */
+  --shadow-2xs: 0px 2px 0px 0px hsl(0 100% 27% / 0.1);
+  --shadow-xs: 0px 2px 0px 0px hsl(0 100% 27% / 0.1);
+  --shadow-sm: 0px 2px 0px 0px hsl(0 100% 27% / 0.2), 0px 1px 2px -1px hsl(0 100% 27% / 0.2);
+  --shadow: 0px 2px 0px 0px hsl(0 100% 27% / 0.3), 0px 1px 2px -1px hsl(0 100% 27% / 0.3);
+  --shadow-md: 0px 2px 0px 0px hsl(0 100% 27% / 0.4), 0px 2px 4px -1px hsl(0 100% 27% / 0.4);
+  --shadow-lg: 0px 2px 0px 0px hsl(0 100% 27% / 0.5), 0px 4px 6px -1px hsl(0 100% 27% / 0.5);
+  --shadow-xl: 0px 2px 0px 0px hsl(0 100% 27% / 0.6), 0px 8px 10px -1px hsl(0 100% 27% / 0.6);
+  --shadow-2xl: 0px 2px 0px 0px hsl(0 100% 27% / 0.7);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+/* Analog Horror Utilities */
+.scanlines {
+  position: relative;
+}
+
+.scanlines::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.25) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.glitch-text {
+  position: relative;
+  display: inline-block;
+  font-family: var(--app-font-serif);
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch-text::before {
+  left: 2px;
+  text-shadow: -1px 0 red;
+  animation: glitch-anim-1 2s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+  left: -2px;
+  text-shadow: -1px 0 blue;
+  animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+  0% { clip: rect(20px, 9999px, 85px, 0); }
+  20% { clip: rect(89px, 9999px, 15px, 0); }
+  40% { clip: rect(6px, 9999px, 59px, 0); }
+  60% { clip: rect(44px, 9999px, 20px, 0); }
+  80% { clip: rect(98px, 9999px, 60px, 0); }
+  100% { clip: rect(10px, 9999px, 80px, 0); }
+}
+
+@keyframes glitch-anim-2 {
+  0% { clip: rect(65px, 9999px, 100px, 0); }
+  20% { clip: rect(3px, 9999px, 20px, 0); }
+  40% { clip: rect(40px, 9999px, 60px, 0); }
+  60% { clip: rect(80px, 9999px, 5px, 0); }
+  80% { clip: rect(25px, 9999px, 45px, 0); }
+  100% { clip: rect(90px, 9999px, 10px, 0); }
+}
+
+.classified-stamp {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  font-family: var(--app-font-serif);
+  font-size: 2rem;
+  color: rgba(139, 0, 0, 0.7);
+  border: 4px solid rgba(139, 0, 0, 0.7);
+  padding: 0.5rem 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+}
+
+.id-card:hover .classified-stamp {
+  opacity: 1;
+}
+
+.vhs-flicker {
+  animation: flicker 0.15s infinite;
+}
+
+@keyframes flicker {
+  0% { opacity: 0.95; }
+  50% { opacity: 1; }
+  100% { opacity: 0.98; }
+}
+
+/* Base elements */
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* BADGE TEXT EFFECTS */
+
+/* Normal — Gold shining */
+.badge-normal {
+  color: #ffd700;
+  font-family: var(--app-font-mono);
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 6px #ffd700, 0 0 12px rgba(255, 215, 0, 0.5);
+  animation: badge-shine-gold 2s ease-in-out infinite alternate;
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  background: rgba(255, 215, 0, 0.05);
+  margin: 2px;
+}
+
+@keyframes badge-shine-gold {
+  0% { text-shadow: 0 0 4px #ffd700, 0 0 8px rgba(255,215,0,0.4); }
+  100% { text-shadow: 0 0 10px #ffd700, 0 0 20px rgba(255,215,0,0.7), 0 0 30px rgba(255,215,0,0.4); }
+}
+
+/* Rare — Green shining */
+.badge-rare {
+  color: #00ff88;
+  font-family: var(--app-font-mono);
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 6px #00ff88, 0 0 12px rgba(0, 255, 136, 0.5);
+  animation: badge-shine-green 2.5s ease-in-out infinite alternate;
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid rgba(0, 255, 136, 0.4);
+  background: rgba(0, 255, 136, 0.05);
+  margin: 2px;
+}
+
+@keyframes badge-shine-green {
+  0% { text-shadow: 0 0 4px #00ff88, 0 0 8px rgba(0,255,136,0.4); }
+  100% { text-shadow: 0 0 12px #00ff88, 0 0 24px rgba(0,255,136,0.7), 0 0 36px rgba(0,255,136,0.4); }
+}
+
+/* Ciel Phantomhive — Dark Blue detailed */
+.badge-ciel {
+  color: #4169e1;
+  font-family: var(--app-font-serif);
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 6px #4169e1, 0 0 12px rgba(65,105,225,0.6), 0 0 20px rgba(65,105,225,0.3);
+  animation: badge-shine-blue 3s ease-in-out infinite alternate;
+  display: inline-block;
+  padding: 3px 10px;
+  border: 1px solid rgba(65,105,225,0.6);
+  background: rgba(65,105,225,0.08);
+  margin: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.badge-ciel::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(65,105,225,0.3), transparent);
+  animation: badge-sweep 3s ease-in-out infinite;
+  transform: skewX(-20deg);
+}
+
+@keyframes badge-shine-blue {
+  0% { text-shadow: 0 0 6px #4169e1, 0 0 12px rgba(65,105,225,0.4); }
+  100% { text-shadow: 0 0 14px #4169e1, 0 0 28px rgba(65,105,225,0.8), 0 0 40px rgba(65,105,225,0.5); }
+}
+
+/* Epic — Purple star shining */
+.badge-epic {
+  color: #bf00ff;
+  font-family: var(--app-font-mono);
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 8px #bf00ff, 0 0 16px rgba(191,0,255,0.6);
+  animation: badge-shine-purple 2s ease-in-out infinite alternate;
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid rgba(191,0,255,0.5);
+  background: rgba(191,0,255,0.08);
+  margin: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.badge-epic::before {
+  content: '★';
+  margin-right: 4px;
+  animation: spin-star 4s linear infinite;
+  display: inline-block;
+}
+
+@keyframes badge-shine-purple {
+  0% { text-shadow: 0 0 6px #bf00ff, 0 0 12px rgba(191,0,255,0.4); }
+  100% { text-shadow: 0 0 14px #bf00ff, 0 0 28px rgba(191,0,255,0.8), 0 0 40px rgba(191,0,255,0.5); }
+}
+
+@keyframes spin-star {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.3); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* Angellic — White shining with sparkle */
+.badge-angellic {
+  color: #fff8e7;
+  font-family: var(--app-font-serif);
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 8px #fff, 0 0 16px rgba(255,255,255,0.8), 0 0 30px rgba(255,248,231,0.6);
+  animation: badge-shine-white 1.5s ease-in-out infinite alternate;
+  display: inline-block;
+  padding: 3px 12px;
+  border: 1px solid rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.05);
+  margin: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.badge-angellic::before {
+  content: '✦ ';
+  animation: sparkle 1.5s ease-in-out infinite alternate;
+  display: inline-block;
+}
+
+.badge-angellic::after {
+  content: ' ✦';
+  animation: sparkle 1.5s ease-in-out infinite alternate-reverse;
+  display: inline-block;
+}
+
+@keyframes badge-shine-white {
+  0% { text-shadow: 0 0 6px #fff, 0 0 12px rgba(255,255,255,0.6); box-shadow: 0 0 8px rgba(255,255,255,0.1); }
+  100% { text-shadow: 0 0 16px #fff, 0 0 32px rgba(255,255,255,0.9), 0 0 50px rgba(255,248,231,0.7); box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+}
+
+@keyframes sparkle {
+  0% { opacity: 0.4; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes badge-sweep {
+  0% { left: -60%; }
+  100% { left: 160%; }
+}
+
+/* Mad Scientist — Dark red, super duper glowy event badge */
+.badge-mad-scientist {
+  color: #ff2200;
+  font-family: var(--app-font-mono);
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-shadow:
+    0 0 4px #ff2200,
+    0 0 10px #ff2200,
+    0 0 20px #cc0000,
+    0 0 40px #990000,
+    0 0 60px #660000;
+  animation: badge-mad-scientist-pulse 1.2s ease-in-out infinite alternate;
+  display: inline-block;
+  padding: 2px 10px;
+  border: 1px solid rgba(200, 0, 0, 0.7);
+  background: rgba(100, 0, 0, 0.15);
+  margin: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.badge-mad-scientist::before {
+  content: '⚗';
+  margin-right: 5px;
+  animation: badge-mad-flicker 0.8s steps(1) infinite;
+  display: inline-block;
+}
+
+.badge-mad-scientist::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,30,0,0.15) 50%, transparent 100%);
+  animation: badge-mad-sweep 2s ease-in-out infinite;
+}
+
+@keyframes badge-mad-scientist-pulse {
+  0% {
+    text-shadow: 0 0 4px #ff2200, 0 0 10px #ff2200, 0 0 20px #cc0000, 0 0 40px #990000;
+    box-shadow: 0 0 6px rgba(200,0,0,0.4), inset 0 0 6px rgba(200,0,0,0.1);
+  }
+  100% {
+    text-shadow: 0 0 8px #ff4400, 0 0 20px #ff2200, 0 0 40px #cc0000, 0 0 80px #990000, 0 0 120px #660000;
+    box-shadow: 0 0 20px rgba(255,30,0,0.6), inset 0 0 12px rgba(200,0,0,0.2);
+  }
+}
+
+@keyframes badge-mad-flicker {
+  0%, 90%, 100% { opacity: 1; }
+  92%, 97% { opacity: 0.2; }
+}
+
+@keyframes badge-mad-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+/* ===================== CUSTOM BADGE ACCESSORIES ===================== */
+
+/* Base custom badge — color is applied inline via style prop */
+.badge-custom {
+  font-family: var(--app-font-mono);
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border: 1px solid currentColor;
+  background: rgba(0, 0, 0, 0.2);
+  margin: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Epic Badge Accessory — The Spinning Star */
+.badge-accessory-spinning-star::before {
+  content: '★';
+  display: inline-block;
+  animation: badge-star-spin 1.5s linear infinite;
+  transform-origin: center;
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
+@keyframes badge-star-spin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.3); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* Seraph Accessory — The Shining Star */
+.badge-accessory-shining-star::before {
+  content: '✦';
+  display: inline-block;
+  animation: badge-star-shine 1.2s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+@keyframes badge-star-shine {
+  0% {
+    opacity: 0.4;
+    transform: scale(0.8);
+    filter: drop-shadow(0 0 2px currentColor);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.4);
+    filter: drop-shadow(0 0 10px currentColor) drop-shadow(0 0 20px currentColor);
+  }
+}
+
+/* Winged Angel Accessory — Angel Wings (flanking text) */
+.badge-accessory-angel-wings::before {
+  content: '»';
+  display: inline-block;
+  animation: badge-wing-flap 1.8s ease-in-out infinite alternate;
+  font-size: 0.9em;
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
+.badge-accessory-angel-wings::after {
+  content: '«';
+  display: inline-block;
+  animation: badge-wing-flap 1.8s ease-in-out infinite alternate-reverse;
+  font-size: 0.9em;
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
+@keyframes badge-wing-flap {
+  0% { transform: translateX(0px) scaleX(1); opacity: 0.7; }
+  50% { transform: translateX(-2px) scaleX(1.2); opacity: 1; }
+  100% { transform: translateX(2px) scaleX(0.9); opacity: 0.8; }
+}
+
+/* Shared glow pulse for all custom badges */
+.badge-custom {
+  animation: badge-custom-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes badge-custom-glow {
+  0% { box-shadow: 0 0 4px currentColor, inset 0 0 4px rgba(255,255,255,0.03); }
+  100% { box-shadow: 0 0 12px currentColor, 0 0 24px currentColor, inset 0 0 8px rgba(255,255,255,0.06); }
+}
+
+/* SKIN CLASSES */
+
+/* Not-so-Detailed */
+.skin-red { border-color: rgba(139,0,0,0.7) !important; box-shadow: 0 0 15px rgba(139,0,0,0.3); }
+.skin-blue { border-color: rgba(0,100,200,0.7) !important; box-shadow: 0 0 15px rgba(0,100,200,0.3); background: linear-gradient(135deg, #0a0a0a 0%, #0a0a14 100%) !important; }
+.skin-purple { border-color: rgba(100,0,150,0.7) !important; box-shadow: 0 0 15px rgba(100,0,150,0.3); background: linear-gradient(135deg, #0a0a0a 0%, #0d0a10 100%) !important; }
+.skin-yellow { border-color: rgba(180,150,0,0.7) !important; box-shadow: 0 0 15px rgba(180,150,0,0.3); background: linear-gradient(135deg, #0a0a0a 0%, #0f0e05 100%) !important; }
+.skin-pink { border-color: rgba(200,50,150,0.7) !important; box-shadow: 0 0 15px rgba(200,50,150,0.3); background: linear-gradient(135deg, #0a0a0a 0%, #10050c 100%) !important; }
+.skin-hoarder { border-color: rgba(80,40,10,0.9) !important; box-shadow: 0 0 15px rgba(80,40,10,0.5), inset 0 0 20px rgba(80,40,10,0.1); background: linear-gradient(135deg, #0a0a0a 0%, #0c0805 100%) !important; }
+
+/* Detailed */
+.skin-hexxed-of-damned { 
+  border-color: rgba(180,20,0,0.8) !important; 
+  box-shadow: 0 0 20px rgba(255,50,0,0.4), 0 0 40px rgba(255,0,0,0.2);
+  background: linear-gradient(135deg, #0a0000 0%, #150500 50%, #0a0000 100%) !important;
+  animation: skin-flame-flicker 2s ease-in-out infinite alternate;
+}
+
+.skin-a-nightmare-unseen {
+  border-color: rgba(100,0,180,0.8) !important;
+  box-shadow: 0 0 20px rgba(150,0,255,0.4), 0 0 40px rgba(100,0,200,0.2);
+  background: linear-gradient(135deg, #050010 0%, #0d0020 50%, #050010 100%) !important;
+  animation: skin-pulse-purple 3s ease-in-out infinite alternate;
+}
+
+.skin-doomsday-everyday {
+  border-color: rgba(150,20,0,0.9) !important;
+  box-shadow: 0 0 20px rgba(180,40,0,0.5), 0 0 50px rgba(100,0,0,0.3);
+  background: linear-gradient(180deg, #0a0200 0%, #1a0500 40%, #0a0200 100%) !important;
+  animation: skin-meteor-flicker 1.5s ease-in-out infinite;
+}
+
+.skin-vampire-atrociousity {
+  border-color: rgba(100,0,30,0.9) !important;
+  box-shadow: 0 0 20px rgba(150,0,40,0.5), 0 0 40px rgba(100,0,20,0.3);
+  background: linear-gradient(135deg, #0a0005 0%, #130008 100%) !important;
+  animation: skin-bat-flicker 4s ease-in-out infinite;
+}
+
+.skin-crucifix-save-me {
+  border-color: rgba(100,180,255,0.6) !important;
+  box-shadow: 0 0 20px rgba(100,180,255,0.3), 0 0 40px rgba(150,200,255,0.15);
+  background: linear-gradient(135deg, #000a12 0%, #000510 100%) !important;
+  animation: skin-glow-blue 3s ease-in-out infinite alternate;
+}
+
+.skin-i-am-phantomhive {
+  border-color: rgba(30,50,180,0.8) !important;
+  box-shadow: 0 0 20px rgba(50,80,220,0.4), 0 0 40px rgba(30,50,180,0.2);
+  background: linear-gradient(135deg, #000510 0%, #000818 100%) !important;
+}
+
+.skin-i-am-siren-hear-me-sing {
+  border-color: rgba(0,180,200,0.7) !important;
+  box-shadow: 0 0 25px rgba(0,200,220,0.4), 0 0 50px rgba(0,150,180,0.2);
+  background: linear-gradient(180deg, #000a10 0%, #001520 50%, #000a10 100%) !important;
+  animation: skin-aqua-wave 4s ease-in-out infinite alternate;
+}
+
+.skin-demon-slayer {
+  border-color: rgba(180,50,0,0.8) !important;
+  box-shadow: 0 0 20px rgba(220,80,0,0.4), 0 0 40px rgba(180,50,0,0.2);
+  background: linear-gradient(135deg, #0a0200 0%, #150800 100%) !important;
+}
+
+.skin-starlight-upon-crisis {
+  border-color: rgba(150,100,255,0.6) !important;
+  box-shadow: 0 0 30px rgba(200,180,255,0.3), 0 0 60px rgba(100,80,200,0.2);
+  background: linear-gradient(135deg, #02000f 0%, #050015 50%, #02000f 100%) !important;
+  animation: skin-galaxy-shimmer 5s ease-in-out infinite alternate;
+}
+
+.skin-baphomets-follower {
+  border-color: rgba(80,0,80,0.9) !important;
+  box-shadow: 0 0 20px rgba(120,0,120,0.5), 0 0 40px rgba(80,0,80,0.3);
+  background: linear-gradient(135deg, #080008 0%, #100010 100%) !important;
+  animation: skin-ritual-pulse 3s ease-in-out infinite;
+}
+
+.skin-lake-of-fire {
+  border-color: rgba(220,80,0,0.9) !important;
+  box-shadow: 0 0 25px rgba(255,100,0,0.5), 0 0 50px rgba(200,50,0,0.3);
+  background: linear-gradient(180deg, #100200 0%, #200800 40%, #100200 100%) !important;
+  animation: skin-lava-glow 2s ease-in-out infinite alternate;
+}
+
+.skin-sabrael-i-am-here {
+  border-color: rgba(255,200,0,0.7) !important;
+  box-shadow: 0 0 25px rgba(255,220,50,0.4), 0 0 50px rgba(255,180,0,0.2);
+  background: linear-gradient(135deg, #100c00 0%, #1a1200 100%) !important;
+  animation: skin-sun-radiance 3s ease-in-out infinite alternate;
+}
+
+.skin-secrets-untold {
+  border-color: rgba(180,0,255,0.7) !important;
+  box-shadow: 0 0 25px rgba(180,0,255,0.4), 0 0 50px rgba(120,0,200,0.2);
+  background: linear-gradient(135deg, #080010 0%, #100020 50%, #080010 100%) !important;
+  animation: skin-phoenix-shimmer 4s ease-in-out infinite alternate;
+}
+
+/* Skin animations */
+@keyframes skin-flame-flicker {
+  0% { box-shadow: 0 0 20px rgba(255,50,0,0.4), 0 0 40px rgba(255,0,0,0.2); }
+  100% { box-shadow: 0 0 30px rgba(255,80,0,0.6), 0 0 60px rgba(255,30,0,0.3); }
+}
+@keyframes skin-pulse-purple {
+  0% { box-shadow: 0 0 20px rgba(150,0,255,0.4); }
+  100% { box-shadow: 0 0 35px rgba(180,0,255,0.7), 0 0 60px rgba(120,0,200,0.4); }
+}
+@keyframes skin-meteor-flicker {
+  0%, 90%, 100% { box-shadow: 0 0 20px rgba(180,40,0,0.5); }
+  95% { box-shadow: 0 0 40px rgba(255,80,0,0.8), 0 0 80px rgba(200,40,0,0.5); }
+}
+@keyframes skin-bat-flicker {
+  0%, 85%, 100% { border-color: rgba(100,0,30,0.9) !important; }
+  88%, 97% { border-color: rgba(200,0,60,0.5) !important; }
+}
+@keyframes skin-glow-blue {
+  0% { box-shadow: 0 0 20px rgba(100,180,255,0.3); }
+  100% { box-shadow: 0 0 40px rgba(150,210,255,0.5), 0 0 80px rgba(100,160,255,0.3); }
+}
+@keyframes skin-aqua-wave {
+  0% { box-shadow: 0 0 25px rgba(0,200,220,0.4); }
+  100% { box-shadow: 0 0 40px rgba(0,230,250,0.6), 0 0 70px rgba(0,180,210,0.3); }
+}
+@keyframes skin-galaxy-shimmer {
+  0% { box-shadow: 0 0 30px rgba(200,180,255,0.3); }
+  50% { box-shadow: 0 0 50px rgba(180,150,255,0.5), 0 0 80px rgba(100,80,200,0.3); }
+  100% { box-shadow: 0 0 30px rgba(220,200,255,0.4), 0 0 60px rgba(150,120,255,0.3); }
+}
+@keyframes skin-ritual-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(120,0,120,0.5); }
+  50% { box-shadow: 0 0 40px rgba(180,0,180,0.7), 0 0 70px rgba(100,0,100,0.4); }
+}
+@keyframes skin-lava-glow {
+  0% { box-shadow: 0 0 25px rgba(255,100,0,0.5); }
+  100% { box-shadow: 0 0 45px rgba(255,140,0,0.7), 0 0 80px rgba(200,60,0,0.4); }
+}
+@keyframes skin-sun-radiance {
+  0% { box-shadow: 0 0 25px rgba(255,220,50,0.4); }
+  100% { box-shadow: 0 0 45px rgba(255,240,100,0.6), 0 0 80px rgba(255,200,0,0.3); }
+}
+@keyframes skin-phoenix-shimmer {
+  0% { box-shadow: 0 0 25px rgba(180,0,255,0.4); border-color: rgba(180,0,255,0.7) !important; }
+  50% { box-shadow: 0 0 40px rgba(220,0,255,0.6), 0 0 70px rgba(150,0,220,0.3); border-color: rgba(220,0,255,0.9) !important; }
+  100% { box-shadow: 0 0 30px rgba(200,0,255,0.5); border-color: rgba(180,0,255,0.7) !important; }
+}
+
+/* ===================== BANNER ===================== */
+.id-banner {
+  width: 100%;
+  height: 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.id-banner-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%);
+  animation: banner-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes banner-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}

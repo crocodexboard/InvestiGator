@@ -10,13 +10,36 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Auth operations
+  - name: profiles
+    description: Profile operations
+  - name: events
+    description: Event board operations
+  - name: bulletin
+    description: Bulletin board operations
+  - name: customSkins
+    description: Custom skin operations
+  - name: customBadges
+    description: Custom badge operations
+  - name: customBanners
+    description: Custom banner operations
+  - name: customBorders
+    description: Custom ID border operations
+  - name: maps
+    description: Map operations
+  - name: badgeInventory
+    description: Badge inventory operations
+  - name: skinInventory
+    description: Skin inventory operations
+  - name: borderInventory
+    description: Border inventory operations
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +47,934 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthCredentials"
+      responses:
+        "201":
+          description: Registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "409":
+          description: Username already taken
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthCredentials"
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserRecord"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+    patch:
+      operationId: updateMe
+      tags: [auth]
+      summary: Update current user status
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserRecord"
+
+  /users:
+    get:
+      operationId: listUsers
+      tags: [auth]
+      summary: List all users (mod panel)
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserRecord"
+
+  /profiles:
+    get:
+      operationId: listProfiles
+      tags: [profiles]
+      summary: List all profiles
+      responses:
+        "200":
+          description: List of profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProfileRecord"
+    post:
+      operationId: createProfile
+      tags: [profiles]
+      summary: Create a new profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileInput"
+      responses:
+        "201":
+          description: Created profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileRecord"
+
+  /profiles/{id}:
+    delete:
+      operationId: deleteProfile
+      tags: [profiles]
+      summary: Delete a profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+    patch:
+      operationId: updateProfile
+      tags: [profiles]
+      summary: Update profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileUpdate"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileRecord"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /events:
+    get:
+      operationId: listEvents
+      tags: [events]
+      summary: List all events
+      responses:
+        "200":
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EventRecord"
+    post:
+      operationId: createEvent
+      tags: [events]
+      summary: Create an event (moderator)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventInput"
+      responses:
+        "201":
+          description: Created event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventRecord"
+
+  /events/{id}:
+    delete:
+      operationId: deleteEvent
+      tags: [events]
+      summary: Delete an event (moderator)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+    patch:
+      operationId: updateEvent
+      tags: [events]
+      summary: Update an event (moderator)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventInput"
+      responses:
+        "200":
+          description: Updated event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventRecord"
+
+  /bulletin:
+    get:
+      operationId: listBulletin
+      tags: [bulletin]
+      summary: List all bulletin items
+      responses:
+        "200":
+          description: List of bulletin items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BulletinRecord"
+    post:
+      operationId: createBulletinItem
+      tags: [bulletin]
+      summary: Create a bulletin item (moderator)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BulletinInput"
+      responses:
+        "201":
+          description: Created item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BulletinRecord"
+
+  /bulletin/{id}:
+    delete:
+      operationId: deleteBulletinItem
+      tags: [bulletin]
+      summary: Delete a bulletin item (moderator)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+    patch:
+      operationId: updateBulletinItem
+      tags: [bulletin]
+      summary: Update a bulletin item (moderator)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BulletinInput"
+      responses:
+        "200":
+          description: Updated item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BulletinRecord"
+
+  /custom-banners:
+    get:
+      operationId: listCustomBanners
+      tags: [customBanners]
+      summary: List all custom banners
+      responses:
+        "200":
+          description: List of custom banners
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CustomBannerRecord"
+    post:
+      operationId: createCustomBanner
+      tags: [customBanners]
+      summary: Create a custom banner (moderator)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomBannerInput"
+      responses:
+        "201":
+          description: Created banner
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomBannerRecord"
+
+  /custom-banners/{id}:
+    delete:
+      operationId: deleteCustomBanner
+      tags: [customBanners]
+      summary: Delete a custom banner (moderator)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /custom-badges:
+    get:
+      operationId: listCustomBadges
+      tags: [customBadges]
+      summary: List all custom badges
+      responses:
+        "200":
+          description: List of custom badges
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CustomBadgeRecord"
+    post:
+      operationId: createCustomBadge
+      tags: [customBadges]
+      summary: Create a custom badge (moderator)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomBadgeInput"
+      responses:
+        "201":
+          description: Created badge
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomBadgeRecord"
+
+  /custom-badges/{id}:
+    delete:
+      operationId: deleteCustomBadge
+      tags: [customBadges]
+      summary: Delete a custom badge (moderator)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /custom-skins:
+    get:
+      operationId: listCustomSkins
+      tags: [customSkins]
+      summary: List all custom skins
+      responses:
+        "200":
+          description: List of custom skins
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CustomSkinRecord"
+    post:
+      operationId: createCustomSkin
+      tags: [customSkins]
+      summary: Create a custom skin (moderator)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomSkinInput"
+      responses:
+        "201":
+          description: Created skin
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomSkinRecord"
+
+  /custom-skins/{id}:
+    delete:
+      operationId: deleteCustomSkin
+      tags: [customSkins]
+      summary: Delete a custom skin (moderator)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /maps:
+    get:
+      operationId: listMaps
+      tags: [maps]
+      summary: List all maps with pinpoints
+      responses:
+        "200":
+          description: List of maps
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MapRecord"
+    post:
+      operationId: createMap
+      tags: [maps]
+      summary: Create a map (moderator)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MapInput"
+      responses:
+        "201":
+          description: Created map
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MapRecord"
+
+  /maps/{id}:
+    patch:
+      operationId: updateMap
+      tags: [maps]
+      summary: Update a map (moderator)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MapInput"
+      responses:
+        "200":
+          description: Updated map
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MapRecord"
+    delete:
+      operationId: deleteMap
+      tags: [maps]
+      summary: Delete a map (moderator)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /maps/{mapId}/pinpoints:
+    post:
+      operationId: createPinpoint
+      tags: [maps]
+      summary: Add a pinpoint to a map (moderator)
+      parameters:
+        - name: mapId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PinpointInput"
+      responses:
+        "201":
+          description: Created pinpoint
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PinpointRecord"
+
+  /maps/{mapId}/pinpoints/{pinId}:
+    patch:
+      operationId: updatePinpoint
+      tags: [maps]
+      summary: Update a pinpoint (moderator)
+      parameters:
+        - name: mapId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: pinId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PinpointInput"
+      responses:
+        "200":
+          description: Updated pinpoint
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PinpointRecord"
+    delete:
+      operationId: deletePinpoint
+      tags: [maps]
+      summary: Delete a pinpoint (moderator)
+      parameters:
+        - name: mapId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: pinId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /maps/{mapId}/pinpoints/{pinId}/live-here:
+    post:
+      operationId: liveHere
+      tags: [maps]
+      summary: Live at a pinpoint (requires auth)
+      parameters:
+        - name: mapId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: pinId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LiveHereInput"
+      responses:
+        "201":
+          description: Now living here
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserLocationRecord"
+
+  /user-location:
+    delete:
+      operationId: moveOut
+      tags: [maps]
+      summary: Remove current user location
+      responses:
+        "204":
+          description: Moved out
+
+  /badge-inventory:
+    get:
+      operationId: listBadgeInventory
+      tags: [badgeInventory]
+      summary: Get current user badge inventory
+      responses:
+        "200":
+          description: Badge inventory
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BadgeInventoryRecord"
+    post:
+      operationId: giveBadge
+      tags: [badgeInventory]
+      summary: Give a badge to a user (moderator)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GiveBadgeInput"
+      responses:
+        "201":
+          description: Badge given
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadgeInventoryRecord"
+
+  /badge-inventory/user/{userId}:
+    get:
+      operationId: listBadgeInventoryForUser
+      tags: [badgeInventory]
+      summary: Get badge inventory for a specific user (mod panel)
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Badge inventory
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BadgeInventoryRecord"
+
+  /badge-inventory/{id}:
+    delete:
+      operationId: removeBadge
+      tags: [badgeInventory]
+      summary: Remove a badge from inventory (moderator)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Removed
+
+  /skin-inventory:
+    get:
+      operationId: listSkinInventory
+      tags: [skinInventory]
+      summary: Get current user skin inventory
+      responses:
+        "200":
+          description: Skin inventory
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SkinInventoryRecord"
+    post:
+      operationId: giveSkin
+      tags: [skinInventory]
+      summary: Give a skin to a user (moderator)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GiveSkinInput"
+      responses:
+        "201":
+          description: Skin given
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkinInventoryRecord"
+
+  /skin-inventory/user/{userId}:
+    get:
+      operationId: listSkinInventoryForUser
+      tags: [skinInventory]
+      summary: Get skin inventory for a specific user (mod panel)
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Skin inventory
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SkinInventoryRecord"
+
+  /skin-inventory/{id}:
+    delete:
+      operationId: removeSkin
+      tags: [skinInventory]
+      summary: Remove a skin from inventory (moderator)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Removed
+
+  /custom-borders:
+    get:
+      operationId: listCustomBorders
+      tags: [customBorders]
+      summary: List all custom ID borders
+      responses:
+        "200":
+          description: List of borders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CustomBorderRecord"
+    post:
+      operationId: createCustomBorder
+      tags: [customBorders]
+      summary: Create a custom ID border (moderator)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomBorderInput"
+      responses:
+        "201":
+          description: Created border
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomBorderRecord"
+
+  /custom-borders/{id}:
+    delete:
+      operationId: deleteCustomBorder
+      tags: [customBorders]
+      summary: Delete a custom border (moderator)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /border-inventory:
+    get:
+      operationId: listBorderInventory
+      tags: [borderInventory]
+      summary: Get current user border inventory
+      responses:
+        "200":
+          description: Border inventory
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BorderInventoryRecord"
+    post:
+      operationId: giveBorder
+      tags: [borderInventory]
+      summary: Give a border to a user (moderator)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GiveBorderInput"
+      responses:
+        "201":
+          description: Border given
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BorderInventoryRecord"
+
+  /border-inventory/user/{userId}:
+    get:
+      operationId: listBorderInventoryForUser
+      tags: [borderInventory]
+      summary: Get border inventory for a specific user (mod panel)
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Border inventory
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BorderInventoryRecord"
+
+  /border-inventory/{id}:
+    delete:
+      operationId: removeBorder
+      tags: [borderInventory]
+      summary: Remove a border from inventory (moderator)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Removed
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +982,523 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    ApiError:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+
+    AuthCredentials:
+      type: object
+      required: [robloxUsername, password]
+      properties:
+        robloxUsername:
+          type: string
+          minLength: 2
+          maxLength: 30
+        password:
+          type: string
+          minLength: 6
+
+    UserRecord:
+      type: object
+      required: [id, robloxUsername, status]
+      properties:
+        id:
+          type: integer
+        robloxUsername:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+
+    UserUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          maxLength: 60
+
+    AuthResponse:
+      type: object
+      required: [token, user]
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/UserRecord"
+
+    ProfileRecord:
+      type: object
+      required: [id, username, displayName, favoriteColor, bio, imageData, ageGroup, badges, traits, skin, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: ["integer", "null"]
+        username:
+          type: string
+        displayName:
+          type: string
+        favoriteColor:
+          type: string
+        bio:
+          type: string
+        imageData:
+          type: string
+        ageGroup:
+          type: string
+        badges:
+          type: array
+          items:
+            type: string
+        traits:
+          type: array
+          items:
+            type: string
+        skin:
+          type: string
+        banner:
+          type: ["string", "null"]
+        boarder:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    ProfileInput:
+      type: object
+      required: [username, displayName, favoriteColor, bio, imageData, ageGroup]
+      properties:
+        username:
+          type: string
+          minLength: 1
+          maxLength: 30
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 30
+        favoriteColor:
+          type: string
+        bio:
+          type: string
+          maxLength: 75
+        imageData:
+          type: string
+        ageGroup:
+          type: string
+        banner:
+          type: string
+        traits:
+          type: array
+          items:
+            type: string
+
+    ProfileUpdate:
+      type: object
+      properties:
+        skin:
+          type: string
+        badges:
+          type: array
+          items:
+            type: string
+        banner:
+          type: ["string", "null"]
+        boarder:
+          type: ["string", "null"]
+        username:
+          type: string
+        displayName:
+          type: string
+        favoriteColor:
+          type: string
+        bio:
+          type: string
+        imageData:
+          type: string
+        ageGroup:
+          type: string
+        traits:
+          type: array
+          items:
+            type: string
+
+    EventRecord:
+      type: object
+      required: [id, title, description, imageData, createdAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        imageData:
+          type: string
+        createdAt:
+          type: string
+
+    EventInput:
+      type: object
+      required: [title, description]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        imageData:
+          type: string
+
+    BulletinRecord:
+      type: object
+      required: [id, category, title, content, url, sortOrder, createdAt]
+      properties:
+        id:
+          type: integer
+        category:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        url:
+          type: string
+        sortOrder:
+          type: string
+        createdAt:
+          type: string
+
+    BulletinInput:
+      type: object
+      required: [category, title]
+      properties:
+        category:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        url:
+          type: string
+        sortOrder:
+          type: string
+
+    CustomBannerRecord:
+      type: object
+      required: [id, name, patternType, primaryColor, secondaryColor, bgColor, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        patternType:
+          type: string
+        primaryColor:
+          type: string
+        secondaryColor:
+          type: string
+        bgColor:
+          type: string
+        createdAt:
+          type: string
+
+    CustomBannerInput:
+      type: object
+      required: [name, patternType, primaryColor, secondaryColor, bgColor]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        patternType:
+          type: string
+        primaryColor:
+          type: string
+        secondaryColor:
+          type: string
+        bgColor:
+          type: string
+
+    CustomBadgeRecord:
+      type: object
+      required: [id, name, color, accessory, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        color:
+          type: string
+        accessory:
+          type: string
+        createdAt:
+          type: string
+
+    CustomBadgeInput:
+      type: object
+      required: [name, color, accessory]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        color:
+          type: string
+        accessory:
+          type: string
+
+    CustomSkinRecord:
+      type: object
+      required: [id, name, glowColor, glowEnabled, borderColor, bgGradientFrom, bgGradientTo, accessories, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        glowColor:
+          type: string
+        glowEnabled:
+          type: boolean
+        borderColor:
+          type: string
+        bgGradientFrom:
+          type: string
+        bgGradientTo:
+          type: string
+        accessories:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+
+    CustomSkinInput:
+      type: object
+      required: [name, glowColor, glowEnabled, borderColor, bgGradientFrom, bgGradientTo, accessories]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        glowColor:
+          type: string
+        glowEnabled:
+          type: boolean
+        borderColor:
+          type: string
+        bgGradientFrom:
+          type: string
+        bgGradientTo:
+          type: string
+        accessories:
+          type: array
+          items:
+            type: string
+
+    MapRecord:
+      type: object
+      required: [id, name, imageData, createdAt, pinpoints]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        imageData:
+          type: string
+        createdAt:
+          type: string
+        pinpoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/PinpointRecord"
+
+    MapInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        imageData:
+          type: string
+        accessCode:
+          type: string
+
+    PinpointRecord:
+      type: object
+      required: [id, mapId, type, name, description, imageData, xPercent, yPercent, createdAt, residents]
+      properties:
+        id:
+          type: integer
+        mapId:
+          type: integer
+        type:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        imageData:
+          type: string
+        xPercent:
+          type: number
+        yPercent:
+          type: number
+        createdAt:
+          type: string
+        residents:
+          type: array
+          items:
+            $ref: "#/components/schemas/ResidentRecord"
+
+    PinpointInput:
+      type: object
+      required: [name]
+      properties:
+        type:
+          type: string
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        imageData:
+          type: string
+        xPercent:
+          type: number
+        yPercent:
+          type: number
+        accessCode:
+          type: string
+
+    ResidentRecord:
+      type: object
+      required: [userId, robloxUsername, displayName, description]
+      properties:
+        userId:
+          type: integer
+        robloxUsername:
+          type: string
+        displayName:
+          type: string
+        description:
+          type: string
+
+    LiveHereInput:
+      type: object
+      properties:
+        description:
+          type: string
+          maxLength: 500
+
+    UserLocationRecord:
+      type: object
+      required: [id, userId, pinpointId, description, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        pinpointId:
+          type: integer
+        description:
+          type: string
+        createdAt:
+          type: string
+
+    BadgeInventoryRecord:
+      type: object
+      required: [id, userId, badgeName, grantedAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        badgeName:
+          type: string
+        grantedAt:
+          type: string
+
+    GiveBadgeInput:
+      type: object
+      required: [userId, badgeName]
+      properties:
+        userId:
+          type: integer
+        badgeName:
+          type: string
+        accessCode:
+          type: string
+
+    SkinInventoryRecord:
+      type: object
+      required: [id, userId, skinName, grantedAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        skinName:
+          type: string
+        grantedAt:
+          type: string
+
+    GiveSkinInput:
+      type: object
+      required: [userId, skinName]
+      properties:
+        userId:
+          type: integer
+        skinName:
+          type: string
+        accessCode:
+          type: string
+
+    CustomBorderRecord:
+      type: object
+      required: [id, name, imageData, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        imageData:
+          type: string
+        createdAt:
+          type: string
+
+    CustomBorderInput:
+      type: object
+      required: [name, imageData]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        imageData:
+          type: string
+
+    BorderInventoryRecord:
+      type: object
+      required: [id, userId, borderName, grantedAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        borderName:
+          type: string
+        grantedAt:
+          type: string
+
+    GiveBorderInput:
+      type: object
+      required: [userId, borderName]
+      properties:
+        userId:
+          type: integer
+        borderName:
+          type: string
+        accessCode:
+          type: string
