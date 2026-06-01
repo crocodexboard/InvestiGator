@@ -22,6 +22,8 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 const TOKEN_KEY = "investigator_token";
 const USER_KEY = "investigator_user";
 
+setAuthTokenGetter(() => localStorage.getItem(TOKEN_KEY));
+
 async function apiFetch(path: string, options: RequestInit = {}) {
   const res = await fetch(`/api${path}`, {
     ...options,

@@ -61,9 +61,15 @@ export default function EditProfile() {
   const { data: profiles } = useListProfiles();
   const { data: customBanners = [] } = useListCustomBanners();
   const { data: customBorders = [] } = useListCustomBorders();
-  const { data: badgeInventory = [] } = useListBadgeInventory();
-  const { data: skinInventory = [] } = useListSkinInventory();
-  const { data: borderInventory = [] } = useListBorderInventory();
+  const { data: badgeInventory = [], isLoading: badgesLoading } = useListBadgeInventory({
+    query: { enabled: !!user },
+  });
+  const { data: skinInventory = [], isLoading: skinsLoading } = useListSkinInventory({
+    query: { enabled: !!user },
+  });
+  const { data: borderInventory = [], isLoading: bordersLoading } = useListBorderInventory({
+    query: { enabled: !!user },
+  });
   const updateProfile = useUpdateProfile();
 
   const profile = profiles?.find(p => p.id === profileId);
@@ -336,10 +342,13 @@ export default function EditProfile() {
             )}
           </div>
 
-          {skinItems.length > 0 && (
-            <div className="space-y-2">
-              <label className="text-xs font-mono text-primary/70 uppercase">Equip Skin</label>
-              <p className="text-xs font-mono text-muted-foreground/60">Select which skin to display on your ID card.</p>
+          <div className="space-y-2">
+            <label className="text-xs font-mono text-primary/70 uppercase">Equip Skin</label>
+            {skinsLoading ? (
+              <p className="text-xs font-mono text-muted-foreground/50 animate-pulse">LOADING INVENTORY...</p>
+            ) : skinItems.length === 0 ? (
+              <p className="text-xs font-mono text-muted-foreground/50 border border-dashed border-primary/20 px-2 py-1.5">No skins in your inventory. Ask a mod to grant you one.</p>
+            ) : (
               <div className="flex flex-wrap gap-1 max-h-32 overflow-y-auto pr-1">
                 <button
                   type="button"
@@ -368,13 +377,16 @@ export default function EditProfile() {
                   </button>
                 ))}
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
-          {badgeItems.length > 0 && (
-            <div className="space-y-2">
-              <label className="text-xs font-mono text-primary/70 uppercase">Equip Badges</label>
-              <p className="text-xs font-mono text-muted-foreground/60">Select which badges to display on your ID card.</p>
+          <div className="space-y-2">
+            <label className="text-xs font-mono text-primary/70 uppercase">Equip Badges</label>
+            {badgesLoading ? (
+              <p className="text-xs font-mono text-muted-foreground/50 animate-pulse">LOADING INVENTORY...</p>
+            ) : badgeItems.length === 0 ? (
+              <p className="text-xs font-mono text-muted-foreground/50 border border-dashed border-primary/20 px-2 py-1.5">No badges in your inventory. Ask a mod to grant you one.</p>
+            ) : (
               <div className="flex flex-wrap gap-1 max-h-40 overflow-y-auto pr-1">
                 {badgeItems.map(item => {
                   const meta = ALL_BADGES.find(b => b.name === item.badgeName);
@@ -400,13 +412,16 @@ export default function EditProfile() {
                   );
                 })}
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
-          {borderItems.length > 0 && (
-            <div className="space-y-2">
-              <label className="text-xs font-mono text-primary/70 uppercase">Equip ID Border</label>
-              <p className="text-xs font-mono text-muted-foreground/60">Select a border frame to overlay on your ID card.</p>
+          <div className="space-y-2">
+            <label className="text-xs font-mono text-primary/70 uppercase">Equip ID Border</label>
+            {bordersLoading ? (
+              <p className="text-xs font-mono text-muted-foreground/50 animate-pulse">LOADING INVENTORY...</p>
+            ) : borderItems.length === 0 ? (
+              <p className="text-xs font-mono text-muted-foreground/50 border border-dashed border-primary/20 px-2 py-1.5">No borders in your inventory. Ask a mod to grant you one.</p>
+            ) : (
               <div className="flex flex-wrap gap-1 max-h-32 overflow-y-auto pr-1">
                 <button
                   type="button"
@@ -435,8 +450,8 @@ export default function EditProfile() {
                   </button>
                 ))}
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           <Button type="submit" className="w-full font-mono uppercase tracking-widest" disabled={updateProfile.isPending}>
             {updateProfile.isPending ? "SAVING..." : "SAVE CHANGES"}

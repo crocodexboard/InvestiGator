@@ -234,9 +234,8 @@ function SkinInventorySection({ refresh, accessCode }: { refresh: () => void; ac
   );
 }
 
-function BorderInventorySection({ refresh, accessCode }: { refresh: () => void; accessCode: string }) {
+function BorderInventorySection({ refresh, accessCode, customBorders }: { refresh: () => void; accessCode: string; customBorders: { id: number; name: string; imageData: string; createdAt: string }[] }) {
   const { data: users = [] } = useListUsers();
-  const { data: customBorders = [] } = useListCustomBorders();
   const giveBorder = useGiveBorder();
   const removeBorder = useRemoveBorder();
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
@@ -1473,6 +1472,9 @@ export default function Moderator() {
   const { data: customBanners } = useListCustomBanners({
     query: { enabled: isAuthenticated, queryKey: getListCustomBannersQueryKey() },
   });
+  const { data: customBordersTop = [] } = useListCustomBorders({
+    query: { enabled: isAuthenticated, queryKey: getListCustomBordersQueryKey() },
+  });
 
   const refreshProfiles = () => queryClient.invalidateQueries({ queryKey: getListProfilesQueryKey() });
   const refreshEvents = () => queryClient.invalidateQueries({ queryKey: getListEventsQueryKey() });
@@ -1541,7 +1543,7 @@ export default function Moderator() {
 
           <BadgeInventorySection refresh={refreshInventory} accessCode={ACCESS_CODE} />
 
-          <BorderInventorySection refresh={refreshInventory} accessCode={ACCESS_CODE} />
+          <BorderInventorySection refresh={refreshInventory} accessCode={ACCESS_CODE} customBorders={customBordersTop} />
 
           <section className="space-y-6">
             <SectionHeader>SECTION 4: ASSIGN BANNER</SectionHeader>
