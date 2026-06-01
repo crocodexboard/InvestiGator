@@ -5,7 +5,9 @@ import {
   useListProfiles, useUpdateProfile, useListCustomBanners,
   useListBadgeInventory, useListSkinInventory, useListBorderInventory,
   useListCustomBorders,
-  getListProfilesQueryKey, CustomBannerRecord, ProfileRecord,
+  getListProfilesQueryKey, getListBadgeInventoryQueryKey,
+  getListSkinInventoryQueryKey, getListBorderInventoryQueryKey,
+  CustomBannerRecord, ProfileRecord,
   BadgeInventoryRecord, SkinInventoryRecord, BorderInventoryRecord,
   CustomBorderRecord,
 } from "@workspace/api-client-react";
@@ -62,13 +64,13 @@ export default function EditProfile() {
   const { data: customBanners = [] } = useListCustomBanners();
   const { data: customBorders = [] } = useListCustomBorders();
   const { data: badgeInventory = [], isLoading: badgesLoading } = useListBadgeInventory({
-    query: { enabled: !!user },
+    query: { enabled: !!user, queryKey: getListBadgeInventoryQueryKey() },
   });
   const { data: skinInventory = [], isLoading: skinsLoading } = useListSkinInventory({
-    query: { enabled: !!user },
+    query: { enabled: !!user, queryKey: getListSkinInventoryQueryKey() },
   });
   const { data: borderInventory = [], isLoading: bordersLoading } = useListBorderInventory({
-    query: { enabled: !!user },
+    query: { enabled: !!user, queryKey: getListBorderInventoryQueryKey() },
   });
   const updateProfile = useUpdateProfile();
 

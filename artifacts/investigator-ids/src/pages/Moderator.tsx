@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Skull, Trash2, Plus, X } from "lucide-react";
+import { ArrowLeft, Skull, Trash2, Plus, X, Check } from "lucide-react";
 import {
   useListProfiles, useDeleteProfile, useUpdateProfile,
   useListEvents, useCreateEvent, useDeleteEvent, useUpdateEvent,
@@ -234,8 +234,12 @@ function SkinInventorySection({ refresh, accessCode }: { refresh: () => void; ac
   );
 }
 
-function BorderInventorySection({ refresh, accessCode, customBorders }: { refresh: () => void; accessCode: string; customBorders: { id: number; name: string; imageData: string; createdAt: string }[] }) {
+function BorderInventorySection({ refresh, accessCode }: { refresh: () => void; accessCode: string }) {
+  const queryClient = useQueryClient();
   const { data: users = [] } = useListUsers();
+  const { data: allBorders = [], isLoading: bordersLoading } = useListCustomBorders({
+    query: { refetchOnMount: true, staleTime: 0, queryKey: getListCustomBordersQueryKey() },
+  });
   const giveBorder = useGiveBorder();
   const removeBorder = useRemoveBorder();
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
@@ -250,7 +254,13 @@ function BorderInventorySection({ refresh, accessCode, customBorders }: { refres
     if (!selectedUserId || !borderName.trim()) return;
     giveBorder.mutate(
       { data: { userId: selectedUserId, borderName: borderName.trim(), accessCode } },
-      { onSuccess: () => { setBorderName(""); refresh(); } }
+      {
+        onSuccess: () => {
+          setBorderName("");
+          queryClient.refetchQueries({ queryKey: getListCustomBordersQueryKey() });
+          refresh();
+        }
+      }
     );
   };
 
@@ -275,17 +285,39 @@ function BorderInventorySection({ refresh, accessCode, customBorders }: { refres
                 </SelectContent>
               </Select>
             </div>
+
             <div>
-              <label className="font-mono text-xs uppercase text-primary block mb-1">Border</label>
-              <Select value={borderName} onValueChange={setBorderName}>
-                <SelectTrigger className="font-mono bg-background border-border"><SelectValue placeholder="PICK BORDER..." /></SelectTrigger>
-                <SelectContent className="font-mono bg-card">
-                  {customBorders.map(b => (
-                    <SelectItem key={b.name} value={b.name}>{b.name}</SelectItem>
+              <label className="font-mono text-xs uppercase text-primary block mb-1">
+                Border {bordersLoading ? <span className="text-muted-foreground/50 normal-case">loading...</span> : <span className="text-muted-foreground/50 normal-case">({allBorders.length} available)</span>}
+              </label>
+              {allBorders.length === 0 && !bordersLoading ? (
+                <p className="font-mono text-xs text-muted-foreground/60 border border-dashed border-primary/20 px-2 py-2">
+                  No borders created yet. Go to Section 11 to create one.
+                </p>
+              ) : (
+                <div className="border border-border/60 bg-background max-h-36 overflow-y-auto">
+                  {allBorders.map(b => (
+                    <button
+                      key={b.name}
+                      type="button"
+                      onClick={() => setBorderName(b.name)}
+                      className={`w-full text-left px-3 py-1.5 font-mono text-xs transition-colors flex items-center justify-between ${
+                        borderName === b.name
+                          ? "bg-primary text-primary-foreground"
+                          : "hover:bg-primary/10 text-foreground"
+                      }`}
+                    >
+                      <span>{b.name}</span>
+                      {borderName === b.name && <Check className="w-3 h-3 shrink-0" />}
+                    </button>
                   ))}
-                </SelectContent>
-              </Select>
+                </div>
+              )}
+              {borderName && (
+                <p className="font-mono text-xs text-primary mt-1">Selected: {borderName}</p>
+              )}
             </div>
+
             <Button onClick={handleGive} disabled={!selectedUserId || !borderName || giveBorder.isPending} className="font-mono bg-primary hover:bg-primary/80 w-full">
               {giveBorder.isPending ? "GRANTING..." : "GRANT BORDER"}
             </Button>
@@ -1472,9 +1504,6 @@ export default function Moderator() {
   const { data: customBanners } = useListCustomBanners({
     query: { enabled: isAuthenticated, queryKey: getListCustomBannersQueryKey() },
   });
-  const { data: customBordersTop = [] } = useListCustomBorders({
-    query: { enabled: isAuthenticated, queryKey: getListCustomBordersQueryKey() },
-  });
 
   const refreshProfiles = () => queryClient.invalidateQueries({ queryKey: getListProfilesQueryKey() });
   const refreshEvents = () => queryClient.invalidateQueries({ queryKey: getListEventsQueryKey() });
@@ -1543,7 +1572,7 @@ export default function Moderator() {
 
           <BadgeInventorySection refresh={refreshInventory} accessCode={ACCESS_CODE} />
 
-          <BorderInventorySection refresh={refreshInventory} accessCode={ACCESS_CODE} customBorders={customBordersTop} />
+          <BorderInventorySection refresh={refreshInventory} accessCode={ACCESS_CODE} />
 
           <section className="space-y-6">
             <SectionHeader>SECTION 4: ASSIGN BANNER</SectionHeader>
