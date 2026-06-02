@@ -295,27 +295,44 @@ function BorderInventorySection({ refresh, accessCode }: { refresh: () => void; 
                   No borders created yet. Go to Section 11 to create one.
                 </p>
               ) : (
-                <div className="border border-border/60 bg-background max-h-36 overflow-y-auto">
+                <div className="border border-border/60 bg-background max-h-44 overflow-y-auto">
                   {allBorders.map(b => (
                     <button
                       key={b.name}
                       type="button"
                       onClick={() => setBorderName(b.name)}
-                      className={`w-full text-left px-3 py-1.5 font-mono text-xs transition-colors flex items-center justify-between ${
+                      className={`w-full text-left px-3 py-1.5 font-mono text-xs transition-colors flex items-center gap-2 ${
                         borderName === b.name
                           ? "bg-primary text-primary-foreground"
                           : "hover:bg-primary/10 text-foreground"
                       }`}
                     >
-                      <span>{b.name}</span>
+                      <img
+                        src={b.imageData}
+                        alt={b.name}
+                        className="w-6 h-8 object-contain shrink-0 border border-primary/20 bg-black/30"
+                      />
+                      <span className="flex-1 truncate">{b.name}</span>
                       {borderName === b.name && <Check className="w-3 h-3 shrink-0" />}
                     </button>
                   ))}
                 </div>
               )}
-              {borderName && (
-                <p className="font-mono text-xs text-primary mt-1">Selected: {borderName}</p>
-              )}
+              {borderName && (() => {
+                const preview = allBorders.find(b => b.name === borderName);
+                return preview ? (
+                  <div className="mt-2 flex items-start gap-3 p-2 border border-primary/30 bg-black/20">
+                    <div className="relative shrink-0" style={{ width: 60, height: 84 }}>
+                      <div className="absolute inset-0 bg-zinc-600/50" />
+                      <img src={preview.imageData} alt={preview.name} className="absolute inset-0 w-full h-full object-fill" />
+                    </div>
+                    <div className="font-mono text-xs pt-1">
+                      <div className="text-primary uppercase tracking-wider">Preview</div>
+                      <div className="text-foreground mt-0.5">{preview.name}</div>
+                    </div>
+                  </div>
+                ) : null;
+              })()}
             </div>
 
             <Button onClick={handleGive} disabled={!selectedUserId || !borderName || giveBorder.isPending} className="font-mono bg-primary hover:bg-primary/80 w-full">
@@ -360,7 +377,10 @@ function BorderInventorySection({ refresh, accessCode }: { refresh: () => void; 
 }
 
 function BorderMakerSection({ refresh }: { refresh: () => void }) {
-  const { data: borders = [], isLoading } = useListCustomBorders();
+  const queryClient = useQueryClient();
+  const { data: borders = [], isLoading } = useListCustomBorders({
+    query: { staleTime: 0, queryKey: getListCustomBordersQueryKey() },
+  });
   const createBorder = useCreateCustomBorder();
   const deleteBorder = useDeleteCustomBorder();
   const [adding, setAdding] = useState(false);
@@ -380,7 +400,15 @@ function BorderMakerSection({ refresh }: { refresh: () => void }) {
     if (!borderNameInput.trim() || !borderImageData) return;
     createBorder.mutate(
       { data: { name: borderNameInput.trim(), imageData: borderImageData } },
-      { onSuccess: () => { setBorderNameInput(""); setBorderImageData(""); setAdding(false); refresh(); } }
+      {
+        onSuccess: () => {
+          setBorderNameInput("");
+          setBorderImageData("");
+          setAdding(false);
+          queryClient.refetchQueries({ queryKey: getListCustomBordersQueryKey() });
+          refresh();
+        },
+      }
     );
   };
 
