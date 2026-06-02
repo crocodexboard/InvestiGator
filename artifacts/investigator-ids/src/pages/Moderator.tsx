@@ -234,12 +234,13 @@ function SkinInventorySection({ refresh, accessCode }: { refresh: () => void; ac
   );
 }
 
-function BorderInventorySection({ refresh, accessCode }: { refresh: () => void; accessCode: string }) {
-  const queryClient = useQueryClient();
+function BorderInventorySection({ refresh, accessCode, allBorders, bordersLoading }: {
+  refresh: () => void;
+  accessCode: string;
+  allBorders: { id: number; name: string; imageData: string; createdAt: string }[];
+  bordersLoading: boolean;
+}) {
   const { data: users = [] } = useListUsers();
-  const { data: allBorders = [], isLoading: bordersLoading } = useListCustomBorders({
-    query: { refetchOnMount: true, staleTime: 0, queryKey: getListCustomBordersQueryKey() },
-  });
   const giveBorder = useGiveBorder();
   const removeBorder = useRemoveBorder();
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
@@ -254,13 +255,7 @@ function BorderInventorySection({ refresh, accessCode }: { refresh: () => void; 
     if (!selectedUserId || !borderName.trim()) return;
     giveBorder.mutate(
       { data: { userId: selectedUserId, borderName: borderName.trim(), accessCode } },
-      {
-        onSuccess: () => {
-          setBorderName("");
-          queryClient.refetchQueries({ queryKey: getListCustomBordersQueryKey() });
-          refresh();
-        }
-      }
+      { onSuccess: () => { setBorderName(""); refresh(); } }
     );
   };
 
@@ -376,11 +371,11 @@ function BorderInventorySection({ refresh, accessCode }: { refresh: () => void; 
   );
 }
 
-function BorderMakerSection({ refresh }: { refresh: () => void }) {
-  const queryClient = useQueryClient();
-  const { data: borders = [], isLoading } = useListCustomBorders({
-    query: { staleTime: 0, queryKey: getListCustomBordersQueryKey() },
-  });
+function BorderMakerSection({ refresh, borders, bordersLoading }: {
+  refresh: () => void;
+  borders: { id: number; name: string; imageData: string; createdAt: string }[];
+  bordersLoading: boolean;
+}) {
   const createBorder = useCreateCustomBorder();
   const deleteBorder = useDeleteCustomBorder();
   const [adding, setAdding] = useState(false);
@@ -400,15 +395,7 @@ function BorderMakerSection({ refresh }: { refresh: () => void }) {
     if (!borderNameInput.trim() || !borderImageData) return;
     createBorder.mutate(
       { data: { name: borderNameInput.trim(), imageData: borderImageData } },
-      {
-        onSuccess: () => {
-          setBorderNameInput("");
-          setBorderImageData("");
-          setAdding(false);
-          queryClient.refetchQueries({ queryKey: getListCustomBordersQueryKey() });
-          refresh();
-        },
-      }
+      { onSuccess: () => { setBorderNameInput(""); setBorderImageData(""); setAdding(false); refresh(); } }
     );
   };
 
@@ -418,7 +405,7 @@ function BorderMakerSection({ refresh }: { refresh: () => void }) {
       <p className="font-mono text-xs text-muted-foreground/70 uppercase tracking-wider">
         Upload transparent PNG frames (5:7 portrait ratio, ~400×560px) that overlay the entire ID card. The center should be transparent so card content shows through.
       </p>
-      {isLoading ? <p className="font-mono text-muted-foreground text-sm animate-pulse">LOADING...</p> : null}
+      {bordersLoading ? <p className="font-mono text-muted-foreground text-sm animate-pulse">LOADING...</p> : null}
 
       <div className="grid gap-4">
         {borders.map(b => (
@@ -1532,6 +1519,9 @@ export default function Moderator() {
   const { data: customBanners } = useListCustomBanners({
     query: { enabled: isAuthenticated, queryKey: getListCustomBannersQueryKey() },
   });
+  const { data: allBorders = [], isLoading: bordersLoading } = useListCustomBorders({
+    query: { enabled: isAuthenticated, staleTime: 0, queryKey: getListCustomBordersQueryKey() },
+  });
 
   const refreshProfiles = () => queryClient.invalidateQueries({ queryKey: getListProfilesQueryKey() });
   const refreshEvents = () => queryClient.invalidateQueries({ queryKey: getListEventsQueryKey() });
@@ -1539,7 +1529,7 @@ export default function Moderator() {
   const refreshSkins = () => queryClient.invalidateQueries({ queryKey: getListCustomSkinsQueryKey() });
   const refreshBadges = () => queryClient.invalidateQueries({ queryKey: getListCustomBadgesQueryKey() });
   const refreshBanners = () => queryClient.invalidateQueries({ queryKey: getListCustomBannersQueryKey() });
-  const refreshBorders = () => queryClient.invalidateQueries({ queryKey: getListCustomBordersQueryKey() });
+  const refreshBorders = () => queryClient.refetchQueries({ queryKey: getListCustomBordersQueryKey() });
   const refreshMaps = () => queryClient.invalidateQueries({ queryKey: getListMapsQueryKey() });
   const refreshInventory = () => queryClient.invalidateQueries();
 
@@ -1600,7 +1590,7 @@ export default function Moderator() {
 
           <BadgeInventorySection refresh={refreshInventory} accessCode={ACCESS_CODE} />
 
-          <BorderInventorySection refresh={refreshInventory} accessCode={ACCESS_CODE} />
+          <BorderInventorySection refresh={refreshInventory} accessCode={ACCESS_CODE} allBorders={allBorders} bordersLoading={bordersLoading} />
 
           <section className="space-y-6">
             <SectionHeader>SECTION 4: ASSIGN BANNER</SectionHeader>
@@ -1617,7 +1607,7 @@ export default function Moderator() {
           <SkinMakerSection refresh={refreshSkins} />
           <BadgeMakerSection refresh={refreshBadges} />
           <CustomBannerMakerSection refresh={refreshBanners} />
-          <BorderMakerSection refresh={refreshBorders} />
+          <BorderMakerSection refresh={refreshBorders} borders={allBorders} bordersLoading={bordersLoading} />
           <MapMakerSection refresh={refreshMaps} accessCode={ACCESS_CODE} />
         </div>
       )}
