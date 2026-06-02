@@ -99,14 +99,14 @@ function ProfileCard({
 
       {bannerCss ? (
         <div
-          className="id-banner id-banner-shimmer"
+          className="id-banner id-banner-shimmer relative z-10"
           style={bannerCss as React.CSSProperties}
         />
       ) : (
-        <div className="h-2 bg-primary/20" />
+        <div className="h-2 bg-primary/20 relative z-10" />
       )}
 
-      <CardContent className="p-6 pt-4">
+      <CardContent className="p-6 pt-4 relative z-10">
         <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
           <div className={bannerCss ? "-mt-10 z-10 relative flex-shrink-0" : "flex-shrink-0"}>
             <Avatar className="w-32 h-32 rounded-none border-2 border-primary/50 shadow-[0_0_15px_rgba(139,0,0,0.3)]">
