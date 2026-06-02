@@ -464,9 +464,9 @@ export default function EditProfile() {
           <p className="text-xs font-mono text-primary/70 uppercase tracking-wider">Live Preview</p>
           <div className={`id-card border-2 bg-card/80 overflow-hidden relative ${equippedSkin ? getSkinClass(equippedSkin) : "border-primary/40"}`} style={{ position: "relative" }}>
             {bannerCss ? (
-              <div className="id-banner id-banner-shimmer relative z-10" style={bannerCss as React.CSSProperties} />
+              <div className="id-banner id-banner-shimmer relative z-[3]" style={bannerCss as React.CSSProperties} />
             ) : (
-              <div className="h-2 bg-primary/20 relative z-10" />
+              <div className="h-2 bg-primary/20 relative z-[3]" />
             )}
             <div className="p-4 space-y-2 font-mono relative z-10">
               <div className="text-xl font-bold">{displayName || "UNKNOWN"}</div>

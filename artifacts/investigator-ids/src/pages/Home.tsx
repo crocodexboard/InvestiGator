@@ -99,11 +99,11 @@ function ProfileCard({
 
       {bannerCss ? (
         <div
-          className="id-banner id-banner-shimmer relative z-10"
+          className="id-banner id-banner-shimmer relative z-[3]"
           style={bannerCss as React.CSSProperties}
         />
       ) : (
-        <div className="h-2 bg-primary/20 relative z-10" />
+        <div className="h-2 bg-primary/20 relative z-[3]" />
       )}
 
       <CardContent className="p-6 pt-4 relative z-10">
