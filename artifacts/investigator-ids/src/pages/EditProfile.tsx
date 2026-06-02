@@ -505,7 +505,7 @@ export default function EditProfile() {
                 src={activeBorderImage}
                 alt=""
                 className="absolute inset-0 w-full h-full pointer-events-none"
-                style={{ objectFit: "fill", zIndex: 30 }}
+                style={{ objectFit: "fill", zIndex: 5 }}
               />
             )}
           </div>

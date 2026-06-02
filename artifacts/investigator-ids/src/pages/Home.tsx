@@ -162,7 +162,7 @@ function ProfileCard({
           src={activeBorder.imageData}
           alt=""
           className="absolute inset-0 w-full h-full pointer-events-none"
-          style={{ objectFit: "fill", zIndex: 30 }}
+          style={{ objectFit: "fill", zIndex: 5 }}
         />
       )}
       <div className="classified-stamp">IDENTIFIED</div>
